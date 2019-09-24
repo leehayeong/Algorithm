@@ -24,23 +24,6 @@ public class BFS {
 	
 
 	public static void bfs(int start) {
-		/*
-		Queue<Integer> queue = new LinkedList<>();
-		queue.offer(start);
-		checked[start] = true;
-		while(!queue.isEmpty()) {
-			int x = queue.peek();
-			queue.poll();
-			System.out.println(x);
-			for(int i = 0; i < a[x].size(); i++) {
-				int y = a[x][i];
-				if(!checked[y]) {
-					q.push(y);
-					checked[y] = true;
-				}
-			}
-		}*/
-		
 		// 1. 큐에 첫 노드 삽입하고 방문표시
 		queue.offer(start);
 		checked[start] = true;
@@ -58,8 +41,7 @@ public class BFS {
 					checked[adjcheck] = true;
 				}
 			}
-		}
-		
+		}	
 	}
 
 	public static void main(String[] args) {
