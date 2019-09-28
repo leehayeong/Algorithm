@@ -19,72 +19,55 @@ public class BOJ7576 {
 	static int M;
 	static int N;
 	static int[][] box;
-	static boolean[][] visited;
+	static int[][] visited;
 	static int[] dx = {1,-1,0,0};
 	static int[] dy = {0,0,-1,1};
-	
-	// 지난 일 수 
-	static int day = 0;
-	
-	public static void search() {
-
-	}
+	static int day;
 	
 	public static void bfs() {
 		Queue<Pair> queue = new LinkedList<>();
 		Pair out;
-		ArrayList<Integer> count = new ArrayList<>();
-		int c = 0;
 		
 		// 1. 첫째날 상자를 탐색하면서 익은 토마토가 있는 위치를 저장한다.
-		// 익은 토마토가 있는 위치 저장
 		for(int i = 0; i < N; i++) {
 			for(int j = 0; j < M; j++) {
 				if(box[i][j] == 1) {	
 					queue.offer(new Pair(i, j));
-					visited[i][j] = true;
-					c++;
+					visited[i][j] = 0;
+				} else {
+					visited[i][j] = -1;
 				}
 			}
 		}
-		count.add(c);
 		
-		// 익은 토마토부터 시작한다.
-		// 큐에 넣고, 빼면서 인접 토마토 중 익지 않은 것 다시 큐에 넣음.
-		// 큐에 넣은 횟수만큼 다음 날 반복해야 함.	
+		// 2. 익은 토마토부터 시작한다.	
 		int x2, y2;	
 		while(!queue.isEmpty()) {
-			c = 0;
-			for(int i = 0; i < count.get(day); i++) {
-				out = queue.poll();
+			out = queue.poll();
 				
-				for(int j = 0; j < 4; j++) {
-					x2 = out.getX() + dx[j];
-					y2 = out.getY() + dy[j];
+			for(int j = 0; j < 4; j++) {
+				x2 = out.getX() + dx[j];
+				y2 = out.getY() + dy[j];
 					
-					if(x2 >= 0 && y2 >= 0 && x2 < N && y2 < M) {
-						if(box[x2][y2] == 0 && !visited[x2][y2]) {
-							queue.offer(new Pair(x2, y2));
-							visited[x2][y2] = true;
-							c++;
-						} else if(box[x2][y2] == -1) {
-							
-						}
+				if(x2 >= 0 && y2 >= 0 && x2 < N && y2 < M) {
+					if(box[x2][y2] == 0 && visited[x2][y2] == -1) {
+						queue.offer(new Pair(x2, y2));
+						visited[x2][y2] = visited[out.getX()][out.getY()] + 1;
 					}
 				}
 			}
-			day++;
-			count.add(c);
 		}
-		day--;
-		
-		// 탐색 후 익지 않은 토마토가 있는지 확인
+	}
+	
+	public static void check() {
 		for(int i = 0; i < N; i++) {
 			for(int j = 0; j < M; j++) {
-				if(box[i][j] == 0 && !visited[i][j]) {
+				if(box[i][j] == 0 && visited[i][j] == -1) {
 					// 하나라도 방문하지 못한 곳이 있다면
 					day = -1;
+					return;
 				}
+				day = Math.max(day, visited[i][j]);
 			}
 		}
 	}
@@ -104,9 +87,11 @@ public class BOJ7576 {
 		}
 
 		// 탐색 
-		visited = new boolean[N][M];
+		visited = new int[N][M];
 		bfs();
-	
+		
+		// 탐색 후 익지 않은 토마토가 있는지 확인
+		check();
 		System.out.println(day);
 		
 		scan.close();
